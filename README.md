@@ -53,7 +53,6 @@ require("ambience").setup({
 ## Notes
 
 - Tracks are played in random order and loop indefinitely
-- Only one instance of mpv runs at a time across multiple Neovim windows
 
 ## Credits
 
