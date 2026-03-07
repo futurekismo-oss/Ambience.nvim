@@ -35,7 +35,10 @@ end
 
 function M.start()
 	-- Check for empty track
-	if not config.tracks or #config.tracks == 0 then vim.notify("Please add tracks in opts", vim.log.levels.ERROR) end
+	if not config.tracks or #config.tracks == 0 then
+		vim.notify("Please add tracks in opts", vim.log.levels.ERROR, { title = "🎶 Ambience" })
+		return -- luacheck: ignore
+	end
 
 	-- Pick a random track from the list of tracks
 	local index = math.random(#config.tracks)
@@ -83,6 +86,14 @@ function M.switch()
 	M.stop()
 	-- start and stop ambience
 	M.start()
+end
+
+return M
+end
+
+return M
+
+return M
 end
 
 return M
