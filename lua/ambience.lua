@@ -89,11 +89,3 @@ function M.switch()
 end
 
 return M
-end
-
-return M
-
-return M
-end
-
-return M
