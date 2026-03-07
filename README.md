@@ -1,4 +1,4 @@
-# 🎶 ambience.nvim
+# 🎶 Ambience.nvim
 
 A lightweight Neovim plugin that plays ambient/lofi music in the background while you code. Music starts automatically when Neovim opens and stops when it closes.
 
