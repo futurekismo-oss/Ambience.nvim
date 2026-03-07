@@ -1,79 +1,82 @@
-local tracks = {
-  { "Lofi Hip Hop Mix", "https://www.youtube.com/watch?v=_ITiwPMUzho" },
-  { "Relax", "https://www.youtube.com/watch?v=f02mOEt11OQ" },
-  { "Silksong", "https://www.youtube.com/watch?v=MUKm5WG25hA" },
-  { "Kingdom Hearts", "https://www.youtube.com/watch?v=okpy6sDNVzI" },
-  { "Hollow Knight", "https://www.youtube.com/watch?v=mYEA5A0Bjyo" },
-  { "Undertale", "https://www.youtube.com/watch?v=yjU4epIX5_k" },
-  { "Deltarune", "https://www.youtube.com/watch?v=V2BaYgDJrLQ" },
-  { "Hollow Purple", "https://www.youtube.com/watch?v=Chhkr1DIpmQ" },
-  { "Battle against a True Hero", "https://www.youtube.com/watch?v=VKh1ro20GdQ" },
-  { "Hopes and Dreams", "https://www.youtube.com/watch?v=NeL0bMF1QBk" },
-  { "THE HOLLOW KNIGHT", "https://www.youtube.com/watch?v=7ogpb6rc65E" }
+local M = {}
+local defaults = {
+	delay = 3000,
+	tracks = {},
+	keymaps = {
+		toggle = "<leader>at",
+		stop = "<leader>ap",
+		switch = "<leader>as",
+	},
 }
-
 
 local job_id = nil
 local paused = false
 
-local function start_ambience()
-  -- Pick a random track from the list of tracks
-  local index = math.random(#tracks)
-  
-  -- Get the data of the track ( name, url )
-  local track = tracks[index]
+function M.setup()
+	config = vim.tbl_deep_extend("force", defaults, opts or {})
 
-  local track_name = track[1]
-  local track_url = track[2]
+	vim.api.nvim_create_autocmd("VimEnter", {
+		callback = function()
+			M.start()
+		end,
+	})
 
-  if not job_id then
-    job_id = vim.fn.jobstart("mpv --no-video --loop --no-terminal --input-ipc-server=/tmp/ambience-socket " .. track_url)
-    vim.defer_fn(function()
-     vim.notify("Playing: " .. track_name, vim.log.levels.INFO, {title = "🎶 Ambience"}) 
-    end, 3000)
-  end
+	vim.api.nvim_create_autocmd("VimLeave", {
+		callback = function()
+			M.stop()
+		end,
+	})
+
+	vim.keymap.set("n", config.keymaps.toggle, M.toggle, { desc = "Pause/Resume ambience music" })
+	vim.keymap.set("n", config.keymaps.end, M.stop, { desc = "Stop ambience music" })
+	vim.keymap.set("n", config.keymaps.switch, M.switch, { desc = "switch ambience track" })
 end
 
-local function end_ambience()
-  vim.fn.jobstop(job_id)
-  vim.notify("Ambience stopped", vim.log.levels.INFO, {title = "🎶 Ambience"})
+function M.start()
+	-- Pick a random track from the list of tracks
+	local index = math.random(#config.tracks)
+	-- Get the data of the track ( name, url )
+	local track = config.tracks[index]
 
-  job_id = nil
+	local track_name = track[1]
+	local track_url = track[2]
+
+	if not job_id then
+		job_id =
+			vim.fn.jobstart("mpv --no-video --loop --no-terminal --input-ipc-server=/tmp/ambience-socket " .. track_url)
+		vim.defer_fn(function()
+			vim.notify("Playing: " .. track_name, vim.log.levels.INFO, { title = "🎶 Ambience" })
+		end, config.delay)
+	end
 end
 
-local function toggle_ambience()
-  if paused then
-    vim.fn.jobstart(
-      'echo \'{"command": ["set_property", "pause", false]}\' | socat - /tmp/ambience-socket',
-      { ["shell"] = true }
-    )
-    paused = false
-    vim.notify("Ambience resumed", vim.log.levels.INFO, {title = "🎶 Ambience"})
-  else
-    vim.fn.jobstart(
-      'echo \'{"command": ["set_property", "pause", true]}\' | socat - /tmp/ambience-socket',
-      { ["shell"] = true }
-    )
-    paused = true
-    vim.notify("Ambience paused", vim.log.levels.INFO, {title = "🎶 Ambience"})
-  end
+local function M.stop()
+	vim.fn.jobstop(job_id)
+	vim.notify("Ambience stopped", vim.log.levels.INFO, { title = "🎶 Ambience" })
+
+	job_id = nil
 end
 
-local function switch_ambience()
-  end_ambience()
-  -- start and stop ambience
-  start_ambience()
+local function M.toggle()
+	if paused then
+		vim.fn.jobstart(
+			'echo \'{"command": ["set_property", "pause", false]}\' | socat - /tmp/ambience-socket',
+			{ ["shell"] = true }
+		)
+		paused = false
+		vim.notify("Ambience resumed", vim.log.levels.INFO, { title = "🎶 Ambience" })
+	else
+		vim.fn.jobstart(
+			'echo \'{"command": ["set_property", "pause", true]}\' | socat - /tmp/ambience-socket',
+			{ ["shell"] = true }
+		)
+		paused = true
+		vim.notify("Ambience paused", vim.log.levels.INFO, { title = "🎶 Ambience" })
+	end
 end
 
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function() start_ambience() end,
-})
-
-vim.api.nvim_create_autocmd("VimLeave", {
-  callback = function() end_ambience() end,
-})
-
-vim.keymap.set("n", "<leader>at", toggle_ambience, { desc = "Pause/Resume ambience music" })
-vim.keymap.set("n", "<leader>ap", end_ambience, { desc = "Stop ambience music" })
-vim.keymap.set("n", "<leader>as", switch_ambience, { desc = "switch ambience track" })
-
+local function M.switch()
+	M.stop()
+	-- start and stop ambience
+	M.start()
+end
