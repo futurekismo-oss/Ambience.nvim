@@ -48,9 +48,10 @@ function M.start()
 end
 
 function M.stop()
-	vim.fn.jobstop(job_id)
+	local id = job_id
+	job_id = nil
+	vim.fn.jobstop(id)
 	vim.notify("Ambience stopped", vim.log.levels.INFO, { title = "🎶 Ambience" })
-
 	job_id = nil
 end
 
@@ -84,13 +85,7 @@ function M.switch()
 		M.stop()
 		local track = config.tracks[idx]
 		last_index = idx
-		job_id = vim.fn.jobstart("mpv --no-video --no-terminal --input-ipc-server=/tmp/ambience-socket " .. track[2], {
-			on_exit = function()
-				if job_id ~= nil then
-					M.start()
-				end
-			end,
-		})
+		job_id = vim.fn.jobstart("mpv --no-video --no-terminal --input-ipc-server=/tmp/ambience-socket " .. track[2])
 		vim.defer_fn(function()
 			vim.notify("Playing: " .. track[1], vim.log.levels.INFO, { title = "🎶 Ambience" })
 		end, config.delay)

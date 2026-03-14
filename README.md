@@ -58,6 +58,7 @@ Add the following to your lualine config:
 This will display `🎶 Track Name` when playing and `⏸ Track Name` when paused.
 
 ## Keymaps
+
 | Key | Action |
 |-----|--------|
 | `<leader>at` | Toggle pause/resume |
