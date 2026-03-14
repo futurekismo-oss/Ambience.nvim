@@ -93,7 +93,7 @@ function M.now_playing()
 	if paused then
 		return " " .. (config.tracks[last_index] and config.tracks[last_index][1] or "")
 	end
-	return "🎶 " .. (config.tracks[last_index] and config.tracks[last_index][1] or "")
+	return "🎵 " .. (config.tracks[last_index] and config.tracks[last_index][1] or "")
 end
 
 function M.setup(opts)
