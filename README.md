@@ -40,27 +40,27 @@ require("ambience").setup({
     switch = "<leader>as",  -- switch to random track
   },
 })
+```
 
-### Lualine Integraton
+## Lualine Integration
 
-Ambience.nvim exposes a `now_playing()` function that can be used to display the
-current track in your statusline.
+Ambience.nvim exposes a `now_playing()` function that can be used
+to display the current track in your statusline.
 
 ### [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim)
 
-```
+Add the following to your lualine config:
 ```lua
+{
+  function()
+    local ok, ambience = pcall(require, "ambience")
+    if not ok then return "" end
+    return ambience.now_playing()
+  end,
+}
+```
 
-```
-```
-```
-```
-  ```
-  ```
-```
-
-
-```
+This will display `🎶 Track Name` when playing and `⏸ Track Name` when paused.
 
 ## Keymaps
 
