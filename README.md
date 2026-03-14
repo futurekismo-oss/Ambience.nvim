@@ -1,6 +1,10 @@
 # 🎶 Ambience.nvim
 A lightweight Neovim plugin that plays ambient/lofi music in the background while you code. Music starts automatically when Neovim opens and stops when it closes.
 
+<a href="https://dotfyle.com/plugins/futurekismo-oss/Ambience.nvim">
+	<img src="https://dotfyle.com/plugins/futurekismo-oss/Ambience.nvim/shield?style=for-the-badge" />
+</a>
+
 ## Dependencies
 - [mpv](https://mpv.io/) — media player
 - [socat](http://www.dest-unreach.org/socat/) — for pause/resume control
