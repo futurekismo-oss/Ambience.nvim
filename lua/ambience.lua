@@ -88,13 +88,14 @@ function M.switch()
 end
 
 function M.now_playing()
-	if job_id == nil then
-		return ""
-	end
-	if paused then
-		return " " .. (config.tracks[last_index] and config.tracks[last_index][1] or "")
-	end
-	return "🎵 " .. (config.tracks[last_index] and config.tracks[last_index][1] or "")
+    if job_id == nil then return "" end
+    local result = vim.fn.system('echo \'{"command": ["get_property", "media-title"]}\' | socat - ' .. socketfile)
+    local ok, data = pcall(vim.fn.json_decode, result)
+    if ok and data and data.data then
+        local prefix = paused and " " or "🎵 "
+        return prefix .. data.data
+    end
+    return ""
 end
 
 function M.setup(opts)
