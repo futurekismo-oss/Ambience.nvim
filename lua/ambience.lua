@@ -90,16 +90,20 @@ end
 function M.now_playing()
   if job_id == nil then return "" end
   local result = vim.fn.system(
-    'echo \'{"command": ["get_property", "playlist-pos"]}\' | socat - ' .. socketfile
+    'echo \'{"command": ["get_property", "media-title"]}\' | socat - ' .. socketfile
   )
   local ok, data = pcall(vim.fn.json_decode, result)
-  if ok and data and data.data ~= nil then
-    local idx = data.data + 1 -- mpv is 0-indexed
-    local track = config.tracks[idx]
-    if track then
-      local prefix = paused and "󰏤 " or "🎵 "
-      return prefix .. track[1]
+  if ok and data and data.data then
+    -- try to match media-title against known track names
+    for _, track in ipairs(config.tracks) do
+      if data.data:find(track[1], 1, true) then
+        local prefix = paused and "󰏤 " or "🎵 "
+        return prefix .. track[1]
+      end
     end
+    -- fallback: just show whatever mpv reports
+    local prefix = paused and "󰏤 " or "🎵 "
+    return prefix .. data.data
   end
   return ""
 end
