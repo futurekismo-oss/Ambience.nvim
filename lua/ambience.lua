@@ -2,7 +2,7 @@ local M = {}
 
 local defaults = {
 	delay = 3000,
-	limit = 16,
+	limit = 8,
 	tracks = {},
 	keymaps = {
 		toggle = "<leader>at",
