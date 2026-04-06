@@ -2,7 +2,7 @@ local M = {}
 
 local defaults = {
 	delay = 3000,
-	limit = 8,
+	limit = 16,
 	tracks = {},
 	keymaps = {
 		toggle = "<leader>at",
@@ -102,7 +102,7 @@ function M.now_playing()
 	return ""
 end
 
-local function truncate(string, limit)
+function truncate(string, limit)
 	-- Calculate the length of the string
 	local string_len = #string
 	if string_len < limit then
