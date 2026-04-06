@@ -2,6 +2,7 @@ local M = {}
 
 local defaults = {
 	delay = 3000,
+	limit = 16,
 	tracks = {},
 	keymaps = {
 		toggle = "<leader>at",
@@ -95,9 +96,22 @@ function M.now_playing()
 	local ok, data = pcall(vim.fn.json_decode, result)
 	if ok and data and data.data then
 		local prefix = paused and " " or "🎵 "
-		return prefix .. data.data
+
+		return prefix .. truncate(data.data, config.limit)
 	end
 	return ""
+end
+
+local function truncate(string, limit)
+	-- Calculate the length of the string
+	local string_len = #string
+	if string_len < limit then
+		return string
+	else
+		-- slice the string and get the characters from index 1 to limit(8)
+		-- Hello world -> Hello wo...
+		return string:sub(1, limit) .. "..."
+	end
 end
 
 function M.setup(opts)
