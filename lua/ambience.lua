@@ -15,7 +15,6 @@ local defaults = {
 local config = {}
 local job_id = nil
 local paused = false
-local last_index = nil
 local playlist = "/tmp/ambience-playlist.m3u"
 local socketfile = "/tmp/ambience-socket"
 
@@ -78,7 +77,6 @@ function M.switch()
 		if not choice then
 			return
 		end
-		last_index = idx
 		local track = config.tracks[idx]
 		vim.fn.jobstart(
 			'echo \'{"command": ["loadfile", "' .. track[2] .. "\"]}' | socat - " .. socketfile,
@@ -97,7 +95,7 @@ function M.now_playing()
 	if ok and data and data.data then
 		local prefix = paused and " " or "🎵 "
 
-		return prefix .. truncate(data.data, config.limit)
+		return prefix .. truncate(data.data, config.character_limit)
 	end
 	return ""
 end
