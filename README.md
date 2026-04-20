@@ -12,7 +12,7 @@ A lightweight Neovim plugin that plays ambient/lofi music in the background whil
 ## Installation
 Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 ```lua
-{
+return {
   "futurekismo-oss/ambience.nvim",
   lazy = false,
   config = function()
@@ -24,6 +24,14 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
     })
   end,
 }
+```
+
+Using vim.pack ( Neovim native plugin manager )
+
+```lua
+vim.pack.add({
+	"https://github.com/futurekismo-oss/Ambience.nvim"
+}, { confirm = false })
 ```
 
 ## Setup
@@ -60,6 +68,7 @@ Add the following to your lualine config:
 }
 ```
 This will display `🎶 Track Name` when playing and `⏸ Track Name` when paused.
+
 
 ## Keymaps
 
